@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>1 & 2 Samuel Diagnostic Quiz</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>1 &amp; 2 Samuel Diagnostic Quiz</title>
 <style>
   :root {
     --bg: #faf7f2;
@@ -12,7 +13,9 @@
     --accent: #8a4b2f;
     --accent-light: #f1e2d6;
     --good: #3f7d4f;
+    --good-bg: #e5f3e8;
     --bad: #b3402f;
+    --bad-bg: #fbe9e6;
     --border: #e6dccf;
   }
   * { box-sizing: border-box; }
@@ -23,358 +26,419 @@
     color: var(--ink);
     display: flex;
     justify-content: center;
-    padding: 24px 12px 60px;
+    padding: 22px 12px 60px;
   }
-  .app { width: 100%; max-width: 640px; }
-  h1 {
-    font-size: 1.4rem;
-    text-align: center;
-    margin: 4px 0 4px;
-  }
-  .subtitle {
-    text-align: center;
-    color: var(--muted);
-    font-size: 0.9rem;
-    margin-bottom: 20px;
-  }
-  .tabs {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 18px;
-  }
+  .app { width: 100%; max-width: 660px; }
+  h1 { font-size: 1.35rem; text-align: center; margin: 4px 0; }
+  .subtitle { text-align: center; color: var(--muted); font-size: 0.85rem; margin-bottom: 18px; }
+  .tabs { display: flex; gap: 8px; margin-bottom: 14px; }
   .tab {
-    flex: 1;
-    padding: 10px 8px;
-    text-align: center;
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    cursor: pointer;
-    font-weight: 600;
-    color: var(--muted);
-    transition: all 0.15s;
+    flex: 1; padding: 10px 8px; text-align: center;
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 10px; cursor: pointer; font-weight: 600;
+    color: var(--muted); transition: all .15s;
   }
-  .tab.active {
-    background: var(--accent);
-    color: white;
-    border-color: var(--accent);
+  .tab.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+  .toolbar {
+    display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+    margin-bottom: 14px; font-size: 0.82rem;
   }
+  .tool-btn {
+    background: var(--card); border: 1px solid var(--border); color: var(--ink);
+    padding: 7px 12px; border-radius: 8px; cursor: pointer; font-size: 0.82rem;
+    font-weight: 600; font-family: inherit;
+  }
+  .tool-btn:hover { border-color: var(--accent); }
+  .save-toggle { display: flex; align-items: center; gap: 6px; color: var(--muted); margin-left: auto; cursor: pointer; }
+  .save-toggle input { accent-color: var(--accent); width: 16px; height: 16px; }
+
+  .navigator {
+    background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+    padding: 14px; margin-bottom: 14px;
+  }
+  .nav-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(42px, 1fr)); gap: 7px; }
+  .nav-cell {
+    aspect-ratio: 1; border: 1px solid var(--border); border-radius: 8px;
+    background: #fffdfb; cursor: pointer; font-size: 0.82rem; font-weight: 600;
+    color: var(--muted); font-family: inherit; display: flex;
+    align-items: center; justify-content: center; padding: 0;
+  }
+  .nav-cell:hover { border-color: var(--accent); }
+  .nav-cell.current { outline: 2px solid var(--accent); outline-offset: 1px; }
+  .nav-cell.right { background: var(--good-bg); border-color: var(--good); color: var(--good); }
+  .nav-cell.wrong { background: var(--bad-bg); border-color: var(--bad); color: var(--bad); }
+  .nav-legend { font-size: 0.75rem; color: var(--muted); margin-top: 10px; }
+
   .card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 22px 20px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+    background: var(--card); border: 1px solid var(--border); border-radius: 14px;
+    padding: 22px 20px; box-shadow: 0 2px 10px rgba(0,0,0,.04);
   }
-  .progress-row {
-    display: flex;
-    justify-content: space-between;
-    font-size: 0.8rem;
-    color: var(--muted);
-    margin-bottom: 10px;
-  }
-  .progress-bar {
-    height: 6px;
-    background: var(--accent-light);
-    border-radius: 4px;
-    overflow: hidden;
-    margin-bottom: 20px;
-  }
-  .progress-fill {
-    height: 100%;
-    background: var(--accent);
-    transition: width 0.2s;
-  }
-  .question {
-    font-size: 1.02rem;
-    font-weight: 600;
-    line-height: 1.45;
-    margin-bottom: 18px;
-  }
+  .progress-row { display: flex; justify-content: space-between; font-size: .8rem; color: var(--muted); margin-bottom: 10px; }
+  .progress-bar { height: 6px; background: var(--accent-light); border-radius: 4px; overflow: hidden; margin-bottom: 20px; }
+  .progress-fill { height: 100%; background: var(--accent); transition: width .2s; }
+  .question { font-size: 1.02rem; font-weight: 600; line-height: 1.45; margin-bottom: 18px; }
   .options { display: flex; flex-direction: column; gap: 10px; }
   .option {
-    text-align: left;
-    padding: 12px 14px;
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    background: #fffdfb;
-    cursor: pointer;
-    font-size: 0.93rem;
-    line-height: 1.35;
-    color: var(--ink);
-    transition: all 0.15s;
+    text-align: left; padding: 12px 14px; border: 1px solid var(--border);
+    border-radius: 10px; background: #fffdfb; cursor: pointer;
+    font-size: .93rem; line-height: 1.35; color: var(--ink);
+    font-family: inherit; transition: all .15s;
   }
   .option:hover { border-color: var(--accent); background: var(--accent-light); }
-  .option.correct { background: #e5f3e8; border-color: var(--good); color: var(--good); font-weight: 600; }
-  .option.incorrect { background: #fbe9e6; border-color: var(--bad); color: var(--bad); font-weight: 600; }
+  .option.correct { background: var(--good-bg); border-color: var(--good); color: var(--good); font-weight: 600; }
+  .option.incorrect { background: var(--bad-bg); border-color: var(--bad); color: var(--bad); font-weight: 600; }
   .option.disabled { cursor: default; }
   .option.disabled:hover { background: #fffdfb; border-color: var(--border); }
-  .option.correct:hover { background: #e5f3e8; border-color: var(--good); }
-  .option.incorrect:hover { background: #fbe9e6; border-color: var(--bad); }
-  .feedback {
-    margin-top: 14px;
-    font-size: 0.9rem;
-    min-height: 20px;
-    font-weight: 600;
-  }
+  .option.correct:hover { background: var(--good-bg); border-color: var(--good); }
+  .option.incorrect:hover { background: var(--bad-bg); border-color: var(--bad); }
+  .feedback { margin-top: 14px; font-size: .9rem; min-height: 20px; font-weight: 600; }
   .feedback.good { color: var(--good); }
   .feedback.bad { color: var(--bad); }
   .ref-tag {
-    display: inline-block;
-    margin-top: 8px;
-    font-size: 0.82rem;
-    font-weight: 600;
-    color: var(--accent);
-    background: var(--accent-light);
-    padding: 4px 10px;
-    border-radius: 20px;
+    display: inline-block; margin-top: 8px; font-size: .82rem; font-weight: 600;
+    color: var(--accent); background: var(--accent-light);
+    padding: 4px 10px; border-radius: 20px;
   }
-  .nav-row {
-    display: flex;
-    justify-content: flex-end;
-    margin-top: 18px;
+  .nav-row { display: flex; justify-content: space-between; gap: 8px; margin-top: 18px; }
+  button.move {
+    background: var(--accent); color: #fff; border: none; padding: 10px 20px;
+    border-radius: 8px; font-size: .92rem; font-weight: 600; cursor: pointer; font-family: inherit;
   }
-  button.next {
-    background: var(--accent);
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 8px;
-    font-size: 0.95rem;
-    font-weight: 600;
-    cursor: pointer;
-  }
-  button.next:disabled { opacity: 0.4; cursor: default; }
-  .result {
-    text-align: center;
-  }
-  .result h2 { margin-bottom: 6px; }
-  .score-big {
-    font-size: 2.6rem;
-    font-weight: 700;
-    color: var(--accent);
-    margin: 10px 0;
-  }
-  .restart, .review-btn {
-    margin-top: 16px;
-    background: var(--accent);
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 8px;
-    font-weight: 600;
-    cursor: pointer;
-    margin-right: 8px;
-  }
-  .review-btn { background: white; color: var(--accent); border: 1px solid var(--accent); }
-  .review-item {
-    text-align: left;
-    border-bottom: 1px solid var(--border);
-    padding: 12px 0;
-    font-size: 0.9rem;
-  }
+  button.move.ghost { background: #fff; color: var(--accent); border: 1px solid var(--accent); }
+  button.move:disabled { opacity: .35; cursor: default; }
+
+  .result { text-align: center; }
+  .score-big { font-size: 2.5rem; font-weight: 700; color: var(--accent); margin: 10px 0 2px; }
+  .review-item { text-align: left; border-bottom: 1px solid var(--border); padding: 12px 0; font-size: .9rem; }
   .review-item .qtext { font-weight: 600; margin-bottom: 4px; }
   .review-item .yourans { color: var(--bad); }
   .review-item .correctans { color: var(--good); }
-  .review-item .refans { color: var(--muted); font-size: 0.8rem; margin-top: 2px; }
+  .review-item .refans { color: var(--muted); font-size: .8rem; margin-top: 2px; }
+  .hidden { display: none; }
 </style>
 </head>
 <body>
 <div class="app">
   <h1>1 &amp; 2 Samuel Diagnostic Quiz</h1>
-  <div class="subtitle">30 questions each &middot; general themes, harder discrimination &middot; chapter &amp; verse shown after each answer</div>
+  <div class="subtitle">30 questions each &middot; jump to any question &middot; chapter &amp; verse shown after answering</div>
 
   <div class="tabs">
-    <div class="tab active" id="tab1" onclick="switchBook(0)">1 Samuel</div>
-    <div class="tab" id="tab2" onclick="switchBook(1)">2 Samuel</div>
+    <div class="tab active" id="tab0" onclick="switchBook(0)">1 Samuel</div>
+    <div class="tab" id="tab1" onclick="switchBook(1)">2 Samuel</div>
   </div>
 
+  <div class="toolbar">
+    <button class="tool-btn" onclick="toggleNavigator()" id="navToggle">Show all questions</button>
+    <button class="tool-btn" onclick="showResults()">See score</button>
+    <button class="tool-btn" onclick="resetBook()">Reset this book</button>
+    <label class="save-toggle"><input type="checkbox" id="saveChk" onchange="onSaveToggle()"> Save my progress</label>
+  </div>
+
+  <div class="navigator hidden" id="navigator"></div>
   <div class="card" id="quizCard"></div>
 </div>
 
 <script>
 const QUIZZES = [
-  { title: "1 Samuel", book: "1 Samuel", questions: [
-    { q: "What did Hannah's vow reveal about her understanding of the son she was asking for?", options: ["He would belong entirely to the LORD's service, not just be a personal blessing", "He would inherit her husband's wealth and status", "He would restore her standing among Elkanah's other wife", "He would grow up to lead Israel's army"], answer: 0, ref: "1:11" },
-    { q: "Hannah's song contrasts God's dealings with the proud and the humble. What point is she making about divine justice?", options: ["God rewards effort regardless of a person's status", "God overturns worldly power structures according to his own purposes", "God favors those born into privilege", "God's justice is determined mainly by ritual correctness"], answer: 1, ref: "2:4-8" },
-    { q: "What was the underlying reason the LORD judged Eli's household so severely?", options: ["Eli knew of his sons' corruption but failed to restrain them", "Eli's sons were born outside the priestly bloodline", "Eli had stopped offering sacrifices altogether", "Eli had allowed foreign priests into the tabernacle"], answer: 0, ref: "2:27-33" },
-    { q: "Why is it significant that young Samuel didn't recognize the LORD's voice right away?", options: ["He assumed all nighttime voices were dreams", "He had never actually met Eli before that night", "It reflects that direct revelation from God was rare in that era", "He was too far from the tabernacle to hear clearly"], answer: 2, ref: "3:1,7-10" },
-    { q: "What does the Ark's capture in battle expose about Israel's understanding of it at the time?", options: ["They believed only priests were permitted to see it", "They treated it as a guaranteed-victory object rather than a sign of God's presence with an obedient people", "They thought it caused droughts if handled improperly", "They believed it needed to remain hidden to work"], answer: 1, ref: "4:3-11" },
-    { q: "What does Dagon's idol falling before the Ark demonstrate?", options: ["That the Philistines' temple was poorly built", "The supremacy of the LORD over Philistine gods", "That the Ark itself was unstable when moved", "That the Philistines needed a larger idol"], answer: 1, ref: "5:2-4" },
-    { q: "Why did the Philistines send guilt offerings along with the Ark rather than simply returning it?", options: ["Israelite law required a tribute payment for its return", "Their priests demanded it as a religious tax", "They hoped to appease the LORD and end the affliction on their people", "It was meant as a bribe to secure a peace treaty"], answer: 2, ref: "6:3-5" },
-    { q: "What did the stone Samuel named Ebenezer commemorate?", options: ["The site of Saul's coronation", "The LORD's help in defeating the Philistines after Israel turned back to him", "The boundary line agreed on with the Philistines", "The location where the Ark was first captured"], answer: 1, ref: "7:10-12" },
-    { q: "What deeper concern did Samuel express to the LORD about Israel's demand for a king?", options: ["That no worthy candidate existed among the tribes", "That the people were effectively rejecting the LORD's own kingship over them", "That a king would exhaust the nation's resources immediately", "That kingship would conflict with existing dietary laws"], answer: 1, ref: "8:6-7" },
-    { q: "What does Saul hiding among the baggage when he was about to be presented as king suggest about him at that stage?", options: ["A reluctance or apparent humility about stepping into the role", "That the lot-casting process had failed", "That he was already plotting against Samuel", "That he doubted the people would accept any king"], answer: 0, ref: "10:20-22" },
-    { q: "What did Saul's rescue of Jabesh-Gilead accomplish for his standing among the people?", options: ["It confirmed his kingship in the people's eyes as evidence of the Spirit's empowering", "It proved he preferred fighting Ammon over the Philistines", "It showed Samuel had lost real influence over Israel", "It revealed Jabesh-Gilead was Saul's ancestral home"], answer: 0, ref: "11:6-15" },
-    { q: "What was the real problem with Saul's unauthorized sacrifice at Gilgal?", options: ["He sacrificed at the wrong physical location", "He offered an unacceptable type of animal", "He acted out of fear and impatience, overstepping into a role not his to fill", "He simply forgot to send word to Samuel"], answer: 2, ref: "13:8-13" },
-    { q: "What makes Jonathan's unintentional violation of Saul's fasting oath ironic?", options: ["Jonathan had proposed the oath himself earlier that day", "Jonathan didn't even know about the oath, yet Saul was ready to enforce it regardless of intent", "The oath only applied to Saul's own household, not Jonathan", "Jonathan was the one who suggested the fast in the first place"], answer: 1, ref: "14:24,27,43-44" },
-    { q: "What underlying issue does Saul's excuse for sparing the best of the Amalekite livestock reveal?", options: ["A pattern of partial obedience that he tried to justify religiously rather than confess plainly", "A genuine misunderstanding of Samuel's original instructions", "A shortage of food supplies for his own troops", "A refusal by his soldiers to carry out the order"], answer: 0, ref: "15:13-21" },
-    { q: "What does Samuel's statement about the LORD looking at the heart, not appearance, ultimately teach through David's selection?", options: ["That David was chosen for being the most physically impressive brother", "That birth order determines who God chooses", "That God's criteria for leadership differ from human assumptions about status or looks", "That Samuel had already secretly favored David beforehand"], answer: 2, ref: "16:6-7" },
-    { q: "What is the significance of David facing Goliath without Saul's armor?", options: ["Saul had refused to lend his armor to a shepherd", "David trusted the LORD's power rather than relying on conventional weapons or protection", "Armor of that size simply didn't exist", "David believed wearing armor broke Israelite law"], answer: 1, ref: "17:38-40,45-47" },
-    { q: "What did Saul's bride-price demand, paid in Philistine casualties, reveal about his true intentions toward David?", options: ["He hoped David would die in the attempt, using the marriage as a trap", "He wanted to test David's battle strategy for future use", "He was honoring a longstanding Philistine custom", "He needed proof of loyalty before approving any marriage"], answer: 0, ref: "18:20-25" },
-    { q: "What does Michal's use of a household idol to deceive Saul's messengers suggest about her household?", options: ["That she was a devout worshiper of the LORD alone", "That such idols were apparently still present in an Israelite home despite prohibitions against them", "That Saul had given her the idol as a wedding gift", "That the idol actually belonged to David"], answer: 1, ref: "19:13-16" },
-    { q: "What was significant about Ahimelech giving David the consecrated bread reserved for priests?", options: ["It was a common meal freely available to any traveler", "It showed how urgent need could override strict ceremonial rules under certain conditions", "Ahimelech was unaware it was consecrated", "The bread had already been declared unfit for priestly use anyway"], answer: 1, ref: "21:3-6" },
-    { q: "What does Doeg carrying out a massacre that Saul's own soldiers refused to commit reveal about Saul's court?", options: ["Saul's paranoia had reached a point where even his loyal soldiers balked at his orders", "Doeg was secretly working for the Philistines", "The priests had genuinely been plotting against Saul", "Doeg acted entirely without Saul's knowledge or approval"], answer: 0, ref: "22:17-19" },
-    { q: "What does David's decision to spare Saul in the cave at En Gedi, despite having a clear opportunity, reveal about his view of the monarchy?", options: ["He was afraid Saul's soldiers were still nearby", "He believed it wasn't his place to harm the LORD's anointed, regardless of personal justification", "He wanted Jonathan's approval before acting", "He was planning to capture Saul alive instead"], answer: 1, ref: "24:6-7" },
-    { q: "What does Abigail's intervention with David reveal about her character compared to Nabal's?", options: ["She acted with wisdom and discernment to prevent needless bloodshed, unlike Nabal's arrogance", "She secretly opposed David and tried to delay him", "She had little real influence and simply followed Nabal's orders", "She acted purely out of fear for her own safety"], answer: 0, ref: "25:23-31" },
-    { q: "Why is it notable that David spared Saul's life a second time at his camp, taking only his spear and water jug?", options: ["It was accidental — David hadn't realized it was Saul", "Abishai overruled David and prevented the killing anyway", "It reinforced David's consistent refusal to take vengeance into his own hands", "It showed David lacked the nerve to finish what he'd started"], answer: 2, ref: "26:9-12" },
-    { q: "What does David's decision to take refuge under a Philistine king suggest about his circumstances at that point?", options: ["He had converted to worship Philistine gods", "His desperation as a hunted fugitive led him to an unlikely refuge among Israel's traditional enemies", "He was secretly working undercover for Saul", "He believed the civil war with Saul had already ended"], answer: 1, ref: "27:1-3" },
-    { q: "Why is Saul's visit to a medium at Endor especially ironic given his own earlier actions?", options: ["He had personally banned mediums and spiritists, yet turned to one when God stayed silent", "He had always secretly practiced divination throughout his reign", "The medium was a former royal advisor he trusted deeply", "Samuel had recommended her to him years earlier"], answer: 0, ref: "28:3,7-8" },
-    { q: "What does David's decision to share plunder even with the exhausted men who stayed behind reveal about his leadership?", options: ["A one-time exception he made and never repeated", "A conviction that shared risk deserved shared reward, not only those who did the fighting", "A strategy meant to weaken potential rivals in his own camp", "A rule forced on him by his soldiers' threats"], answer: 1, ref: "30:21-25" },
-    { q: "What does the risk taken by the men of Jabesh-Gilead to retrieve and bury Saul's body reveal about his legacy?", options: ["They had never respected Saul during his reign", "Despite his failures, his earlier rescue of their city earned him lasting loyalty even in death", "They acted only out of fear of Philistine retaliation", "They were secretly working with David to embarrass the Philistines"], answer: 1, ref: "31:11-13" },
-    { q: "What did Jonathan's covenant with David — giving him his robe, armor, and weapons — symbolically represent?", options: ["Jonathan recognized and affirmed David's future kingship ahead of his own claim to the throne", "A formal declaration of war against Saul", "A ceremonial requirement before any friendship was possible", "Jonathan's request that David serve as his personal bodyguard"], answer: 0, ref: "18:3-4" },
-    { q: "What ultimately caused the rift between Saul and Samuel that led Samuel to grieve rather than continue guiding him?", options: ["A personal jealousy Samuel felt toward Saul's growing popularity", "Saul's repeated pattern of partial or self-justified obedience rather than genuine submission", "Saul's decision to relocate Israel's capital", "Samuel's advancing age forcing his retirement"], answer: 1, ref: "15:34-35" }
-  ]},
-  { title: "2 Samuel", book: "2 Samuel", questions: [
-    { q: "What does David's execution of the Amalekite who claimed to have killed Saul reveal about his view of the monarchy?", options: ["He treated harming the LORD's anointed as a serious offense, even when framed as a mercy killing", "He feared the man would try to claim the throne himself", "He wanted to appear merciful to Saul's surviving family", "It was standard practice to execute all foreign messengers on principle"], answer: 0, ref: "1:14-16" },
-    { q: "What does the prolonged conflict following the contest at the pool of Gibeon illustrate about the transition of power after Saul's death?", options: ["A brief skirmish that was quickly resolved by treaty", "A costly, drawn-out civil war between the houses of Saul and David rather than a swift transition", "A dispute over water rights unrelated to the succession", "A conflict staged entirely by outside powers"], answer: 1, ref: "2:12-17; 3:1" },
-    { q: "Why did Joab's killing of Abner threaten to damage David's political standing?", options: ["Abner was David's cousin, making it a personal family betrayal", "It appeared to violate a peace agreement David had just made, risking his credibility with Israel", "It broke a treaty David had signed with the Philistines", "It gave Absalom immediate grounds to rebel"], answer: 1, ref: "3:26-28,36-37" },
-    { q: "What does David's response to the men who assassinated Ish-bosheth — execution rather than reward — reveal about his character?", options: ["A political calculation aimed only at pleasing Saul's remaining supporters", "A consistent refusal to gain the throne through violence against Saul's line, even when it would have benefited him", "An act required by law with no personal conviction behind it", "A decision made under pressure from Joab"], answer: 1, ref: "4:9-12" },
-    { q: "What made Jerusalem a strategically wise choice for David's new capital?", options: ["It was the wealthiest city in Canaan at the time", "It had no prior inhabitants requiring resettlement", "It was chosen mainly for coastal trade access", "It belonged to no single Israelite tribe, helping unify a previously divided kingdom"], answer: 3, ref: "5:6-9" },
-    { q: "What theological problem does Uzzah's death while steadying the Ark point to?", options: ["The Ark had specific instructions for how it must be transported that were being disregarded", "Uzzah was being punished for an unrelated earlier offense", "The Ark had become permanently cursed after Philistine possession", "No one outside the priesthood was ever allowed near the Ark under any circumstance"], answer: 0, ref: "6:6-7" },
-    { q: "Why did David hesitate and delay bringing the Ark the rest of the way into Jerusalem after Uzzah's death?", options: ["He was waiting for Nathan's formal approval first", "He became afraid of the LORD and wary of moving the Ark himself", "The road into the city was blocked by enemy forces", "He needed to finish building the temple first"], answer: 1, ref: "6:9-10" },
-    { q: "What does Michal's contempt for David's uninhibited dancing before the Ark reveal about a difference in values between them?", options: ["Michal was jealous that she hadn't been allowed to join the celebration", "David prioritized wholehearted worship over the royal dignity Michal expected of a king", "Michal secretly worshiped a different god than David", "David had ignored an explicit request from Michal to include her"], answer: 1, ref: "6:16,20-23" },
-    { q: "What is the central promise the LORD makes to David through Nathan in what's often called the Davidic covenant?", options: ["That David personally would never die", "That Jerusalem would never again be attacked by any nation", "That David's dynasty and throne would be established forever, despite his descendants' failures", "That Israel would never require another king after David's line ended"], answer: 2, ref: "7:12-16" },
-    { q: "How does the narrator frame the source of David's success in his military campaigns?", options: ["As the result of superior chariots and weaponry", "As victories the LORD gave him, not purely a product of his own skill", "As success achieved mainly through marriage alliances", "As triumphs won primarily through mercenary armies"], answer: 1, ref: "8:6,14" },
-    { q: "What does David's kindness to Mephibosheth reveal about how he handled his earlier covenant with Jonathan?", options: ["He honored a personal promise despite the political risk, since Mephibosheth had a claim to Saul's throne", "He wanted to closely monitor a potential rival by controlling him", "He was legally obligated to do so under inheritance law", "He acted only after Mephibosheth personally pleaded for mercy"], answer: 0, ref: "9:1,6-7" },
-    { q: "Why did Hanun's treatment of David's messengers of condolence provoke a full-scale war rather than a diplomatic apology?", options: ["It was a deliberate, public insult to David and his kingdom, not a misunderstanding", "David's messengers had trespassed on sacred Ammonite ground", "Hanun genuinely mistook the messengers for spies", "David overreacted to a fairly minor incident for personal gain"], answer: 0, ref: "10:2-6" },
-    { q: "What does the narrator's note that David stayed behind \"when kings go out to battle\" foreshadow?", options: ["That he was too injured to fight that particular year", "The idle circumstances that set the stage for his affair with Bathsheba", "His growing wisdom in avoiding unnecessary wars", "A deliberate strategy to let Joab gain glory instead"], answer: 1, ref: "11:1-2" },
-    { q: "What does David's series of attempts to get Uriah to go home to his wife reveal, before he resorted to having him killed?", options: ["David tried less drastic ways to conceal the pregnancy before escalating to murder", "David confessed his sin to Uriah directly", "Uriah was completely unaware anything was wrong", "David never attempted any kind of cover-up at all"], answer: 0, ref: "11:6-13" },
-    { q: "Why was Nathan's parable about the poor man's ewe lamb an effective way to confront David?", options: ["It flattered David before shifting to unrelated advice", "It was a legal case David was formally required to judge as king", "It led David to condemn the injustice in the story before realizing he had done the same thing himself", "It described a dispute about land inheritance unrelated to his own situation"], answer: 2, ref: "12:1-7" },
-    { q: "What does the death of Bathsheba's first child, despite David's fasting and pleading, illustrate about the consequences described in Nathan's judgment?", options: ["That David's prayers had been insincere", "That the child's death was unrelated to David's actions", "That forgiveness did not eliminate every consequence of David's sin", "That Bathsheba alone was being punished for the adultery"], answer: 2, ref: "12:13-18" },
-    { q: "What does Amnon's shift from obsession to hatred toward Tamar immediately after violating her reveal about his \"love\"?", options: ["It was genuine love that soured because of something Tamar did", "It was never real love, but selfish desire exposed once it was gratified", "It was a calculated political move regarding succession", "It was caused entirely by outside manipulation from Jonadab"], answer: 1, ref: "13:14-15" },
-    { q: "Why did Absalom wait two years before avenging Tamar instead of acting immediately?", options: ["He had genuinely forgiven Amnon before changing his mind", "David had ordered him to wait for a formal trial", "He was occupied leading military campaigns elsewhere", "He calculated and concealed his intentions carefully, showing premeditation"], answer: 3, ref: "13:22-23" },
-    { q: "What was the strategic purpose behind Joab staging the wise woman of Tekoa's appeal to David?", options: ["To warn David of an assassination plot against him", "To request a formal trial for Absalom's crime", "To use an emotionally persuasive, indirect story to move David toward reconciling with Absalom", "To convince David to abdicate the throne in Absalom's favor"], answer: 2, ref: "14:1-3,13-14" },
-    { q: "What does Absalom's habit of engaging people at the city gate, before the revolt, suggest about how he built his following?", options: ["He was formally appointed as a judge by David", "He deliberately cultivated grievances against David's justice system to win personal loyalty", "He was simply carrying out his official royal duties", "He acted purely on Ahithophel's suggestion, without personal ambition"], answer: 1, ref: "15:2-6" },
-    { q: "Why is Ittai the Gittite's loyalty to David during the flight from Jerusalem notable?", options: ["He was secretly working for Absalom the whole time", "A foreigner under no real obligation to David displayed more loyalty than some of David's own countrymen", "He was legally bound to follow David under a mercenary contract", "He simply had nowhere else to go"], answer: 1, ref: "15:19-21" },
-    { q: "Why did David refuse to retaliate against Shimei's cursing during his flight?", options: ["He was too physically weak to respond", "His soldiers refused to act without a written order", "He considered that God might be using it, choosing humility over vengeance in his suffering", "He didn't actually recognize who Shimei was at the time"], answer: 2, ref: "16:10-12" },
-    { q: "What was the effect of Hushai's counsel prevailing over Ahithophel's more tactically sound advice to Absalom?", options: ["It led to an immediate victory for Absalom's forces", "It delayed Absalom's pursuit, giving David crucial time to escape and regroup", "It caused Absalom to abandon the rebellion outright", "It exposed Hushai as a spy right away"], answer: 1, ref: "17:14-16" },
-    { q: "What does Joab's decision to kill Absalom, despite David's explicit order to spare him, reveal about the tension in David's court?", options: ["Joab acted without any awareness of David's order", "Joab was following an independent decree issued by the elders", "Joab prioritized what he saw as the kingdom's stability over strict obedience to David's wishes", "Joab mistook Absalom for another combatant entirely"], answer: 2, ref: "18:5,14" },
-    { q: "Why did Joab rebuke David for mourning Absalom so openly after the victory?", options: ["Joab didn't believe David's grief was genuine", "David's visible grief was demoralizing the very soldiers who had just risked their lives for him", "Joab wanted David to publicly execute Absalom's remaining supporters", "Joab was jealous of the bond between David and Absalom"], answer: 1, ref: "19:5-7" },
-    { q: "What does the negotiation between the wise woman of Abel Beth-Maacah and Joab reveal about the value placed on the city versus one rebel's life?", options: ["The city refused to cooperate and was destroyed anyway", "Sheba surrendered voluntarily before any negotiation took place", "Joab agreed to spare Sheba in exchange for tribute payments", "The city chose to give up one man's life to prevent the destruction of the whole community"], answer: 3, ref: "20:16-22" },
-    { q: "What underlying issue was the three-year famine, tied to Saul's earlier broken oath to the Gibeonites, meant to highlight?", options: ["That famines in this narrative were random and unrelated to moral causes", "That the Gibeonites had fabricated their claim against Saul", "That unresolved injustice from a previous generation still carried consequences for the nation", "That David bore no responsibility for addressing wrongs from Saul's reign"], answer: 2, ref: "21:1-2" },
-    { q: "What does the account of David's mighty men and their individual exploits emphasize about the strength of his kingdom?", options: ["That his kingdom's strength came mainly from foreign alliances", "That mercenaries, not native Israelites, formed his elite force", "That David personally outperformed every one of his soldiers in combat", "That his success depended on a loyal circle of exceptional warriors, not on David's strength alone"], answer: 3, ref: "23:8-17" },
-    { q: "Why does David's census of the fighting men provoke divine judgment, when counting people wasn't inherently forbidden elsewhere?", options: ["Counting people was always strictly forbidden under any circumstance", "The census reflected misplaced trust in military might rather than reliance on the LORD", "Joab had secretly falsified the numbers to flatter David", "The census had included residents explicitly forbidden from being counted"], answer: 1, ref: "24:1-4,10" },
-    { q: "What does David's insistence on paying full price for Araunah's threshing floor, rather than accepting it as a gift, reveal about his view of sacrifice?", options: ["He wanted to avoid future disputes over the land's ownership", "He was following a strict legal requirement with no personal conviction behind it", "He didn't trust Araunah's motives for offering it freely", "He believed a genuine offering to God had to cost him something personally"], answer: 3, ref: "24:21-24" }
-  ]}
+{ title: "1 Samuel", book: "1 Samuel", questions: [
+ { q:"What did Hannah's vow reveal about the son she was asking for?",
+   options:["He would serve the LORD his whole life","He would inherit Elkanah's wealth and standing","He would restore her status over Peninnah","He would grow up to lead Israel's army"], answer:0, ref:"1:11" },
+ { q:"Hannah's song contrasts the proud and the humble. What point is she making about divine justice?",
+   options:["God rewards hard work regardless of a person's status","God overturns human power structures by his own will","God consistently favors those born into privilege","God's justice rests mainly on ritual correctness"], answer:1, ref:"2:4-8" },
+ { q:"What was the underlying reason the LORD judged Eli's household so severely?",
+   options:["His sons came from outside the priestly line","He had stopped offering sacrifices altogether","He knew of his sons' corruption but never restrained them","He allowed foreign priests into the tabernacle"], answer:2, ref:"2:27-33" },
+ { q:"Why is it significant that Samuel didn't recognize the LORD's voice at first?",
+   options:["He assumed voices at night were only dreams","He slept too far away to hear it clearly","He had not yet been trained in worship by Eli","Direct revelation from God was rare in that era"], answer:3, ref:"3:1,7-10" },
+ { q:"What does the Ark's capture in battle expose about Israel at that time?",
+   options:["They thought only priests were allowed to see it","They treated it as a guaranteed-victory charm","They believed it caused droughts if mishandled","They thought it only worked while kept hidden"], answer:1, ref:"4:3-11" },
+ { q:"What does Dagon's idol falling before the Ark demonstrate?",
+   options:["The Philistine temple was poorly constructed","The Ark was unstable whenever it was moved","The LORD's supremacy over the gods of Philistia","The Philistines simply needed a sturdier idol"], answer:2, ref:"5:2-4" },
+ { q:"Why did the Philistines send guilt offerings back along with the Ark?",
+   options:["Israelite law demanded tribute for its return","Their own priests imposed it as a religious tax","They meant it as a bribe to secure peace","They hoped to appease the LORD and end their affliction"], answer:3, ref:"6:3-5" },
+ { q:"What did the stone Samuel named Ebenezer commemorate?",
+   options:["The site where Saul was crowned as king","The boundary line agreed on with the Philistines","The LORD's help in defeating the Philistines","The place where the Ark was first captured"], answer:2, ref:"7:10-12" },
+ { q:"What deeper concern did Samuel raise about Israel's demand for a king?",
+   options:["No worthy candidate existed among the tribes","The people were really rejecting the LORD's kingship","A king would drain the nation's resources quickly","Kingship would conflict with existing dietary laws"], answer:1, ref:"8:6-7" },
+ { q:"What does Saul hiding among the baggage suggest about him at that stage?",
+   options:["Reluctance, or at least apparent humility, about the role","Evidence that the lot-casting process had failed","Proof that he was already plotting against Samuel","Doubt that Israel would accept any king at all"], answer:0, ref:"10:20-22" },
+ { q:"What did Saul's rescue of Jabesh-Gilead accomplish for his standing?",
+   options:["It confirmed his kingship as the Spirit's empowering","It showed he preferred Ammon over the Philistines","It proved Samuel had lost influence over Israel","It revealed Jabesh-Gilead was Saul's ancestral home"], answer:0, ref:"11:6-15" },
+ { q:"What was the real problem with Saul's unauthorized sacrifice at Gilgal?",
+   options:["He sacrificed at the wrong physical location","He offered an unacceptable type of animal","He simply forgot to send word ahead to Samuel","Fear and impatience led him to overstep his role"], answer:3, ref:"13:8-13" },
+ { q:"What makes Jonathan's violation of Saul's fasting oath ironic?",
+   options:["Jonathan had proposed the oath himself that morning","Jonathan never heard it, yet Saul would still enforce it","The oath bound only Saul's household, not Jonathan","Jonathan was the one who first suggested the fast"], answer:1, ref:"14:24,27,43-44" },
+ { q:"What does Saul's excuse for sparing the Amalekite livestock reveal?",
+   options:["Partial obedience dressed up in religious justification","A genuine misunderstanding of Samuel's instructions","A real shortage of food supplies for his troops","His soldiers' outright refusal to obey the order"], answer:0, ref:"15:13-21" },
+ { q:"What does the LORD looking at the heart rather than appearance teach through David's selection?",
+   options:["David was chosen as the most impressive brother","Birth order determines whom God ultimately chooses","God's standard for leadership differs from human assumptions","Samuel had already secretly favored David beforehand"], answer:2, ref:"16:6-7" },
+ { q:"What does the narrator record about the Spirit at David's anointing?",
+   options:["The Spirit rested equally on both men from then on","The Spirit left David until the day Saul died","The Spirit came only later, when David became king","The Spirit came upon David while departing from Saul"], answer:3, ref:"16:13-14" },
+ { q:"What is the significance of David facing Goliath without Saul's armor?",
+   options:["Saul refused to lend his armor to a shepherd","No armor in the camp would fit someone his size","He believed wearing armor violated Israelite law","He trusted the LORD rather than conventional protection"], answer:3, ref:"17:38-40,45-47" },
+ { q:"What did Jonathan's covenant gift of his robe, armor, and weapons represent?",
+   options:["A formal declaration of war against his own father","A ceremonial step required before any friendship began","A request that David serve as his personal bodyguard","Recognition of David's kingship ahead of his own claim"], answer:3, ref:"18:3-4" },
+ { q:"What did Saul's bride-price demand reveal about his intentions toward David?",
+   options:["He hoped David would die in the attempt","He wanted to study David's battle tactics closely","He was honoring a longstanding Philistine custom","He needed proof of loyalty before the marriage"], answer:0, ref:"18:20-25" },
+ { q:"What does Michal's use of a household idol to deceive Saul's men suggest?",
+   options:["She had worshiped the LORD alone all her life","Such idols were still present in Israelite homes","Saul had given her the idol as a wedding gift","The idol had actually belonged to David himself"], answer:1, ref:"19:13-16" },
+ { q:"What was significant about Ahimelech giving David the consecrated bread?",
+   options:["It was ordinary food available to any traveler","Ahimelech did not realize the bread was consecrated","Urgent human need could override ceremonial restriction","The bread had already been declared unfit for priests"], answer:2, ref:"21:3-6" },
+ { q:"What does Doeg carrying out a massacre Saul's soldiers refused reveal?",
+   options:["Saul's paranoia had outrun even his soldiers' loyalty","Doeg was secretly working for the Philistines","The priests really had been plotting against Saul","Doeg acted entirely without Saul's knowledge or order"], answer:0, ref:"22:17-19" },
+ { q:"What does David sparing Saul at En Gedi reveal about his view of the throne?",
+   options:["He feared Saul's soldiers were still nearby","He wanted Jonathan's approval before taking action","He planned instead to capture Saul alive","He would not raise a hand against the LORD's anointed"], answer:3, ref:"24:6-7" },
+ { q:"What does Abigail's intervention reveal about her character next to Nabal's?",
+   options:["She used wisdom to prevent needless bloodshed","She secretly opposed David and tried to delay him","She had little influence and simply followed orders","She acted purely out of fear for her own life"], answer:0, ref:"25:23-31" },
+ { q:"Why is it notable that David spared Saul a second time at his camp?",
+   options:["It was accidental; David never recognized Saul","Abishai overruled David and stopped the killing","It confirmed a consistent refusal to take vengeance","It showed David lacked the nerve to finish it"], answer:2, ref:"26:9-12" },
+ { q:"What does David taking refuge under a Philistine king suggest about his situation?",
+   options:["He had converted to the gods of Philistia","He was secretly working undercover for King Saul","He believed the conflict with Saul had ended","Desperation drove him to shelter among Israel's enemies"], answer:3, ref:"27:1-3" },
+ { q:"Why is Saul's visit to the medium at Endor especially ironic?",
+   options:["He had banned mediums, then consulted one himself","He had secretly practiced divination for many years","The medium was a trusted former royal advisor","Samuel had recommended her to him years earlier"], answer:0, ref:"28:3,7-8" },
+ { q:"What does David sharing plunder with the men who stayed behind reveal?",
+   options:["A one-time exception he never repeated again","Shared risk deserved shared reward, not only fighters","A strategy meant to weaken rivals within his camp","A rule forced on him by his soldiers' threats"], answer:1, ref:"30:21-25" },
+ { q:"What does the men of Jabesh-Gilead risking themselves to bury Saul reveal?",
+   options:["They had never truly respected Saul while he lived","They acted mainly from fear of Philistine reprisal","His early rescue of their city earned lasting loyalty","They were secretly helping David embarrass the Philistines"], answer:2, ref:"31:11-13" },
+ { q:"What ultimately caused the rift that left Samuel grieving over Saul?",
+   options:["Samuel's jealousy of Saul's growing popularity","Saul's pattern of partial, self-justified obedience","Saul's decision to relocate Israel's capital city","Samuel's advancing age forcing him into retirement"], answer:1, ref:"15:34-35" }
+]},
+{ title: "2 Samuel", book: "2 Samuel", questions: [
+ { q:"What does David executing the Amalekite who claimed to kill Saul reveal?",
+   options:["He feared the man would claim the throne himself","He wanted to appear merciful to Saul's family","Harming the LORD's anointed was a grave offense","Executing foreign messengers was standard practice then"], answer:2, ref:"1:14-16" },
+ { q:"What does the conflict following the contest at Gibeon illustrate?",
+   options:["A brief skirmish quickly settled by treaty","A costly civil war between the two royal houses","A water-rights dispute unrelated to the succession","A conflict staged entirely by outside foreign powers"], answer:1, ref:"2:12-17; 3:1" },
+ { q:"Why did Joab's killing of Abner threaten David's political standing?",
+   options:["Abner was David's cousin, making it a family betrayal","It broke a treaty David had signed with Philistia","It gave Absalom immediate grounds to rebel","It seemed to violate the peace David had just made"], answer:3, ref:"3:26-28,36-37" },
+ { q:"What does David executing Ish-bosheth's assassins reveal about him?",
+   options:["Political calculation to please Saul's remaining supporters","Refusal to seize the throne through violence","A legal requirement carrying no personal conviction","A decision made under heavy pressure from Joab"], answer:1, ref:"4:9-12" },
+ { q:"What made Jerusalem a wise choice for David's new capital?",
+   options:["It was the wealthiest city in Canaan at the time","It had no prior inhabitants requiring resettlement","It belonged to no single tribe, helping unify Israel","It offered the best access to coastal trade routes"], answer:2, ref:"5:6-9" },
+ { q:"What problem does Uzzah's death while steadying the Ark point to?",
+   options:["Specific instructions for carrying the Ark were ignored","Uzzah was punished for an unrelated earlier offense","The Ark stayed cursed after Philistine possession","No one outside the priesthood could ever approach it"], answer:0, ref:"6:6-7" },
+ { q:"Why did David delay bringing the Ark the rest of the way in?",
+   options:["He waited for Nathan to give formal approval","Enemy forces had blocked the road into the city","He needed to finish building the temple first","He became afraid of the LORD and hesitated"], answer:3, ref:"6:9-10" },
+ { q:"What does Michal's contempt for David's dancing reveal about their values?",
+   options:["She resented being excluded from the celebration","She secretly worshiped a different god than David","David valued wholehearted worship over royal dignity","David had ignored her explicit request to join him"], answer:2, ref:"6:16,20-23" },
+ { q:"What is the central promise the LORD makes to David through Nathan?",
+   options:["That David himself would never taste death","That Jerusalem would never be attacked again","That Israel would need no king after his line","That his throne and dynasty would endure forever"], answer:3, ref:"7:12-16" },
+ { q:"How does the narrator frame the source of David's military success?",
+   options:["Superior chariots and weaponry taken in campaigns","Victories the LORD gave him, not his skill alone","Success achieved largely through marriage alliances","Triumphs won mainly by hired mercenary armies"], answer:1, ref:"8:6,14" },
+ { q:"What does David's kindness to Mephibosheth show about his covenant with Jonathan?",
+   options:["He honored a promise despite the political risk","He wanted to monitor a rival by controlling him","Inheritance law legally obligated him to do it","He acted only after Mephibosheth pleaded for mercy"], answer:0, ref:"9:1,6-7" },
+ { q:"Why did Hanun's treatment of David's messengers provoke war rather than apology?",
+   options:["The messengers had trespassed on sacred Ammonite ground","Hanun genuinely mistook the messengers for spies","David overreacted to a fairly minor incident","It was a deliberate public insult to David's kingdom"], answer:3, ref:"10:2-6" },
+ { q:"What does the note that David stayed home \"when kings go out to battle\" foreshadow?",
+   options:["He was too injured to fight that particular year","His growing wisdom in avoiding unnecessary wars","The idle setting that led to the Bathsheba affair","A deliberate plan to let Joab gain the glory"], answer:2, ref:"11:1-2" },
+ { q:"What do David's repeated attempts to send Uriah home reveal?",
+   options:["He tried lesser cover-ups before turning to murder","He confessed the whole matter to Uriah directly","Uriah remained completely unaware anything was wrong","He never attempted any kind of cover-up at all"], answer:0, ref:"11:6-13" },
+ { q:"Why was Nathan's parable an effective way to confront David?",
+   options:["It flattered David before shifting to other advice","It came as a legal case David was bound to judge","It concerned a land dispute unlike David's own situation","David condemned the act before seeing it was his own"], answer:3, ref:"12:1-7" },
+ { q:"What does the death of Bathsheba's first child illustrate?",
+   options:["That David's prayers had never been sincere","That the child's death was unrelated to his sin","That forgiveness did not erase every consequence","That Bathsheba alone bore the punishment for adultery"], answer:2, ref:"12:13-18" },
+ { q:"What does Amnon's turn from obsession to hatred reveal about his \"love\"?",
+   options:["Real love that soured over something Tamar did","Selfish desire exposed once it had been gratified","A calculated political move regarding the succession","The result of outside manipulation by Jonadab"], answer:1, ref:"13:14-15" },
+ { q:"Why did Absalom wait two years before avenging Tamar?",
+   options:["He had truly forgiven Amnon, then changed his mind","David ordered him to await a formal trial","Military campaigns elsewhere kept him fully occupied","He concealed his intent, showing careful premeditation"], answer:3, ref:"13:22-23" },
+ { q:"What was the purpose behind Joab staging the wise woman of Tekoa's appeal?",
+   options:["To warn David of a plot against his life","To request a formal trial for Absalom's crime","To move David toward reconciling through an indirect story","To persuade David to abdicate in Absalom's favor"], answer:2, ref:"14:1-3,13-14" },
+ { q:"What does Absalom's habit of meeting people at the gate suggest?",
+   options:["David had formally appointed him as a judge","He cultivated grievances to win personal loyalty","He was simply performing his official royal duties","He acted on Ahithophel's idea, without personal ambition"], answer:1, ref:"15:2-6" },
+ { q:"Why is Ittai the Gittite's loyalty during David's flight notable?",
+   options:["He was secretly working for Absalom the whole time","A mercenary contract legally bound him to David","He simply had nowhere else in the region to go","A foreigner showed more loyalty than David's own people"], answer:3, ref:"15:19-21" },
+ { q:"Why did David refuse to retaliate against Shimei's cursing?",
+   options:["He was physically too weak to respond at all","His soldiers refused to act without written orders","He allowed that God might be behind it","He did not actually recognize who Shimei was"], answer:2, ref:"16:10-12" },
+ { q:"What was the effect of Absalom following Hushai's counsel over Ahithophel's?",
+   options:["It produced an immediate victory for Absalom's forces","It delayed pursuit, giving David time to regroup","It caused Absalom to abandon the rebellion outright","It exposed Hushai as a spy almost immediately"], answer:1, ref:"17:14-16" },
+ { q:"What does Joab killing Absalom against David's order reveal about the court?",
+   options:["Joab had no awareness of David's order at all","Joab followed an independent decree from the elders","Joab mistook Absalom for another combatant entirely","Joab put the kingdom's stability above David's wishes"], answer:3, ref:"18:5,14" },
+ { q:"Why did Joab rebuke David for mourning Absalom so openly?",
+   options:["Joab doubted whether David's grief was genuine","David's public grief was demoralizing his own soldiers","Joab wanted Absalom's supporters publicly executed","Joab envied the bond between David and Absalom"], answer:1, ref:"19:5-7" },
+ { q:"What does the negotiation at Abel Beth-Maacah reveal about the city's priorities?",
+   options:["The city refused to cooperate and was destroyed","Sheba surrendered himself before negotiations even began","The city gave up one life to save the whole","Joab spared Sheba in exchange for tribute payments"], answer:2, ref:"20:16-22" },
+ { q:"What did the famine tied to Saul's broken oath to the Gibeonites highlight?",
+   options:["Famines in this narrative are random and amoral","The Gibeonites had fabricated their claim against Saul","David bore no responsibility for Saul's old wrongs","Unresolved injustice still carried national consequences"], answer:3, ref:"21:1-2" },
+ { q:"What does the account of David's mighty men emphasize about his kingdom?",
+   options:["Success rested on a loyal circle of exceptional warriors","The kingdom's strength depended chiefly on foreign alliances","Mercenaries rather than Israelites formed the elite force","David outperformed every one of his own soldiers"], answer:0, ref:"23:8-17" },
+ { q:"Why did David's census of the fighting men provoke judgment?",
+   options:["Counting people was forbidden under all circumstances","It reflected trust in military might over the LORD","Joab had falsified the numbers to flatter David","The count included residents forbidden from being numbered"], answer:1, ref:"24:1-4,10" },
+ { q:"What does David insisting on paying for Araunah's threshing floor reveal?",
+   options:["He wanted to prevent future disputes over ownership","A strict legal requirement compelled him to pay","He distrusted Araunah's motives for offering it freely","A true offering had to cost him something personally"], answer:3, ref:"24:21-24" }
+]}
 ];
 
+const STORE_KEY = 'samuelQuizProgress_v1';
 let currentBook = 0;
 let currentQ = 0;
-let score = 0;
-let answered = false;
-let missed = [];
+let navOpen = false;
+let saveOn = false;
+// answers[book][qIndex] = chosen option index, or null
+let answers = [ Array(30).fill(null), Array(30).fill(null) ];
 
+/* ---------- storage ---------- */
+function storageAvailable() {
+  try { const t='__t'; localStorage.setItem(t,t); localStorage.removeItem(t); return true; }
+  catch(e) { return false; }
+}
+function saveState() {
+  if (!saveOn || !storageAvailable()) return;
+  try { localStorage.setItem(STORE_KEY, JSON.stringify({ answers, currentBook, currentQ, saveOn:true })); }
+  catch(e) {}
+}
+function loadState() {
+  if (!storageAvailable()) { document.getElementById('saveChk').disabled = true; return; }
+  try {
+    const raw = localStorage.getItem(STORE_KEY);
+    if (!raw) return;
+    const s = JSON.parse(raw);
+    if (s && Array.isArray(s.answers)) {
+      answers = s.answers;
+      currentBook = s.currentBook || 0;
+      currentQ = s.currentQ || 0;
+      saveOn = true;
+      document.getElementById('saveChk').checked = true;
+    }
+  } catch(e) {}
+}
+function onSaveToggle() {
+  saveOn = document.getElementById('saveChk').checked;
+  if (saveOn) saveState();
+  else { try { localStorage.removeItem(STORE_KEY); } catch(e) {} }
+}
+
+/* ---------- navigation ---------- */
 function switchBook(i) {
   currentBook = i;
   currentQ = 0;
-  score = 0;
-  answered = false;
-  missed = [];
-  document.getElementById('tab1').classList.toggle('active', i === 0);
-  document.getElementById('tab2').classList.toggle('active', i === 1);
-  renderQuestion();
+  document.getElementById('tab0').classList.toggle('active', i === 0);
+  document.getElementById('tab1').classList.toggle('active', i === 1);
+  render();
+  saveState();
+}
+function goTo(i) { currentQ = i; render(); saveState(); }
+function nextQ() { if (currentQ < 29) { currentQ++; render(); saveState(); } else showResults(); }
+function prevQ() { if (currentQ > 0) { currentQ--; render(); saveState(); } }
+
+function toggleNavigator() {
+  navOpen = !navOpen;
+  document.getElementById('navigator').classList.toggle('hidden', !navOpen);
+  document.getElementById('navToggle').textContent = navOpen ? 'Hide question list' : 'Show all questions';
+  if (navOpen) renderNavigator();
+}
+function renderNavigator() {
+  const quiz = QUIZZES[currentBook];
+  let html = '<div class="nav-grid">';
+  quiz.questions.forEach((item, i) => {
+    const a = answers[currentBook][i];
+    let cls = 'nav-cell';
+    if (a !== null) cls += (a === item.answer) ? ' right' : ' wrong';
+    if (i === currentQ) cls += ' current';
+    html += `<button class="${cls}" onclick="goTo(${i})">${i+1}</button>`;
+  });
+  html += '</div><div class="nav-legend">Tap any number to jump there. Green = answered correctly, red = missed, plain = not yet answered.</div>';
+  document.getElementById('navigator').innerHTML = html;
 }
 
-function renderQuestion() {
+/* ---------- rendering ---------- */
+function render() {
   const quiz = QUIZZES[currentBook];
-  const card = document.getElementById('quizCard');
-
-  if (currentQ >= quiz.questions.length) {
-    renderResult();
-    return;
-  }
-
   const item = quiz.questions[currentQ];
-  answered = false;
-
-  const pct = Math.round((currentQ / quiz.questions.length) * 100);
+  const chosen = answers[currentBook][currentQ];
+  const doneCount = answers[currentBook].filter(a => a !== null).length;
+  const pct = Math.round((doneCount / quiz.questions.length) * 100);
+  const letters = ['a','b','c','d'];
 
   let html = `
-    <div class="progress-row"><span>${quiz.title}</span><span>Question ${currentQ + 1} of ${quiz.questions.length}</span></div>
+    <div class="progress-row"><span>${quiz.title} &middot; Question ${currentQ + 1} of 30</span><span>${doneCount} answered</span></div>
     <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
     <div class="question">${item.q}</div>
-    <div class="options" id="optionsWrap">
-  `;
-  const letters = ['a', 'b', 'c', 'd'];
-  item.options.forEach((opt, idx) => {
-    html += `<button class="option" onclick="selectAnswer(${idx})">${letters[idx]}. ${opt}</button>`;
-  });
-  html += `</div><div class="feedback" id="feedback"></div>
-    <div class="nav-row"><button class="next" id="nextBtn" disabled onclick="nextQuestion()">Next</button></div>`;
+    <div class="options" id="optionsWrap">`;
 
-  card.innerHTML = html;
+  item.options.forEach((opt, idx) => {
+    let cls = 'option';
+    if (chosen !== null) {
+      cls += ' disabled';
+      if (idx === item.answer) cls += ' correct';
+      else if (idx === chosen) cls += ' incorrect';
+    }
+    html += `<button class="${cls}" onclick="selectAnswer(${idx})">${letters[idx]}. ${opt}</button>`;
+  });
+  html += `</div><div class="feedback" id="feedback">`;
+  if (chosen !== null) {
+    const ok = chosen === item.answer;
+    html += `<span class="${ok ? 'good' : 'bad'}">${ok ? 'Correct!' : 'Not quite — the correct answer is highlighted above.'}</span>
+             <div class="ref-tag">${quiz.book} ${item.ref}</div>`;
+  }
+  html += `</div>
+    <div class="nav-row">
+      <button class="move ghost" onclick="prevQ()" ${currentQ === 0 ? 'disabled' : ''}>Back</button>
+      <button class="move" onclick="nextQ()">${currentQ === 29 ? 'Finish' : 'Next'}</button>
+    </div>`;
+
+  document.getElementById('quizCard').innerHTML = html;
+  if (navOpen) renderNavigator();
 }
 
 function selectAnswer(idx) {
-  if (answered) return;
-  answered = true;
-  const quiz = QUIZZES[currentBook];
-  const item = quiz.questions[currentQ];
-  const opts = document.querySelectorAll('#optionsWrap .option');
-  opts.forEach((btn, i) => {
-    btn.classList.add('disabled');
-    if (i === item.answer) btn.classList.add('correct');
-    else if (i === idx) btn.classList.add('incorrect');
-  });
-  const fb = document.getElementById('feedback');
-  const refHtml = `<div class="ref-tag">${quiz.book} ${item.ref}</div>`;
-  if (idx === item.answer) {
-    score++;
-    fb.innerHTML = "Correct!" + refHtml;
-    fb.className = "feedback good";
-  } else {
-    fb.innerHTML = "Not quite — correct answer highlighted above." + refHtml;
-    fb.className = "feedback bad";
-    missed.push({ q: item.q, your: item.options[idx], correct: item.options[item.answer], ref: `${quiz.book} ${item.ref}` });
-  }
-  document.getElementById('nextBtn').disabled = false;
+  if (answers[currentBook][currentQ] !== null) return;
+  answers[currentBook][currentQ] = idx;
+  render();
+  saveState();
 }
 
-function nextQuestion() {
-  currentQ++;
-  renderQuestion();
-}
-
-function renderResult() {
+function showResults() {
   const quiz = QUIZZES[currentBook];
-  const total = quiz.questions.length;
-  const pct = Math.round((score / total) * 100);
-  let msg = "Keep reviewing — you'll get there!";
-  if (pct >= 90) msg = "Excellent grasp of the book!";
-  else if (pct >= 75) msg = "Solid understanding!";
+  const given = answers[currentBook];
+  const doneCount = given.filter(a => a !== null).length;
+  const score = quiz.questions.reduce((n, item, i) => n + (given[i] === item.answer ? 1 : 0), 0);
+  const pct = doneCount ? Math.round((score / doneCount) * 100) : 0;
+  let msg = "Keep reviewing — you'll get there.";
+  if (pct >= 90) msg = "Excellent grasp of the book.";
+  else if (pct >= 75) msg = "Solid understanding.";
   else if (pct >= 50) msg = "Decent start — a bit more review will help.";
 
-  let html = `
-    <div class="result">
-      <h2>${quiz.title} — Results</h2>
-      <div class="score-big">${score}/${total}</div>
-      <div>${pct}% correct</div>
-      <p>${msg}</p>
-      <button class="restart" onclick="switchBook(${currentBook})">Retake Quiz</button>
-      ${missed.length ? '<button class="review-btn" onclick="renderReview()">Review Missed</button>' : ''}
-    </div>
-  `;
-  document.getElementById('quizCard').innerHTML = html;
-}
-
-function renderReview() {
-  let html = `<h2>Missed Questions (${missed.length})</h2>`;
-  missed.forEach(m => {
-    html += `
-      <div class="review-item">
-        <div class="qtext">${m.q}</div>
-        <div class="yourans">Your answer: ${m.your}</div>
-        <div class="correctans">Correct answer: ${m.correct}</div>
-        <div class="refans">Reference: ${m.ref}</div>
-      </div>
-    `;
+  const missed = [];
+  quiz.questions.forEach((item, i) => {
+    if (given[i] !== null && given[i] !== item.answer) {
+      missed.push({ n:i+1, q:item.q, your:item.options[given[i]], correct:item.options[item.answer], ref:`${quiz.book} ${item.ref}` });
+    }
   });
-  html += `<div class="nav-row" style="margin-top:16px;"><button class="restart" onclick="switchBook(${currentBook})">Back to Quiz</button></div>`;
+
+  let html = `<div class="result">
+      <h2>${quiz.title} — Score</h2>
+      <div class="score-big">${score}/${doneCount || 0}</div>
+      <div style="color:var(--muted);font-size:.88rem;">${pct}% of the ${doneCount} you answered${doneCount < 30 ? ` &middot; ${30 - doneCount} left` : ''}</div>
+      <p>${msg}</p>
+      <button class="move ghost" onclick="render()">Back to questions</button>
+    </div>`;
+
+  if (missed.length) {
+    html += `<h3 style="margin-top:22px;font-size:1rem;">Missed (${missed.length})</h3>`;
+    missed.forEach(m => {
+      html += `<div class="review-item">
+          <div class="qtext">${m.n}. ${m.q}</div>
+          <div class="yourans">You chose: ${m.your}</div>
+          <div class="correctans">Correct: ${m.correct}</div>
+          <div class="refans">${m.ref}</div>
+        </div>`;
+    });
+  }
   document.getElementById('quizCard').innerHTML = html;
 }
 
-renderQuestion();
+function resetBook() {
+  if (!confirm(`Clear all your answers for ${QUIZZES[currentBook].title}?`)) return;
+  answers[currentBook] = Array(30).fill(null);
+  currentQ = 0;
+  render();
+  saveState();
+}
+
+/* ---------- init ---------- */
+loadState();
+document.getElementById('tab0').classList.toggle('active', currentBook === 0);
+document.getElementById('tab1').classList.toggle('active', currentBook === 1);
+render();
 </script>
 </body>
 </html>
